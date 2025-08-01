@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyFocus Pro | Ultimate Productivity App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #ffbe0b;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --pomodoro: #f94144;
+            --break: #90be6d;
+            --forest-green: #2e8b57;
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --focus-overlay: rgba(0, 0, 0, 0.95);
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .container {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            margin-bottom: 10px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #f8f9fa, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--success));
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.7rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .card-title i {
+            background: var(--accent);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(67, 97, 238, 0.3);
+        }
+
+        .date-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .date-display {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .date-controls button {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .date-controls button:hover {
+            background: var(--accent);
+        }
+
+        .task-input {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .task-input input, .task-input select {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 1.05rem;
+            transition: var(--transition);
+        }
+
+        .task-input input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .task-input input:focus, .task-input select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.3);
+        }
+
+        .task-input select {
+            max-width: 150px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn-focus {
+            background: var(--pomodoro);
+            font-size: 1.1rem;
+            padding: 15px 30px;
+        }
+
+        .btn-forest {
+            background: var(--forest-green);
+        }
+
+        .task-list {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 15px;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .task-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            transition: var(--transition);
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .task-item.completed {
+            background: rgba(76, 201, 240, 0.15);
+        }
+
+        .task-item.completed .task-text {
+            opacity: 0.8;
+        }
+
+        .task-check {
+            margin-right: 18px;
+            min-width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .task-check:hover {
+            transform: scale(1.1);
+        }
+
+        .task-check.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-check.checked::after {
+            content: "✓";
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-text {
+            flex: 1;
+            word-break: break-word;
+            font-size: 1.1rem;
+            padding-right: 15px;
+        }
+
+        .priority-tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        .priority-high {
+            background: rgba(247, 37, 133, 0.2);
+            color: #ff6b9c;
+        }
+
+        .priority-medium {
+            background: rgba(255, 190, 11, 0.2);
+            color: #ffd166;
+        }
+
+        .priority-low {
+            background: rgba(76, 201, 240, 0.2);
+            color: #90e0ef;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-actions button {
+            padding: 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            min-width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .timer-display {
+            font-size: 5.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            color: white;
+            text-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            letter-spacing: -3px;
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .timer-modes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .timer-mode {
+            padding: 15px 10px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .timer-mode:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .timer-mode.active {
+            background: var(--pomodoro);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(249, 65, 68, 0.3);
+        }
+
+        .timer-mode.break.active {
+            background: var(--break);
+            box-shadow: 0 5px 15px rgba(144, 190, 109, 0.3);
+        }
+
+        .progress-container {
+            margin-top: 25px;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.7s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+            background: linear-gradient(to right, #f8f9fa, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .notification-area {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            max-width: 350px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: var(--dark);
+            color: white;
+            padding: 18px 22px;
+            border-radius: 15px;
+            margin-top: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(100%);
+            animation: slideIn 0.5s forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+
+        .notification.reminder::before {
+            background: var(--danger);
+        }
+
+        .notification.timer::before {
+            background: var(--success);
+        }
+
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+
+        .notification i {
+            font-size: 1.8rem;
+        }
+
+        .notification.reminder i {
+            color: var(--danger);
+        }
+
+        .notification.timer i {
+            color: var(--success);
+        }
+
+        .install-prompt {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: var(--dark);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: pulse 2s infinite;
+            max-width: 450px;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(67, 97, 238, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+        }
+
+        .install-prompt i {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .install-prompt div {
+            flex: 1;
+        }
+
+        .note-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .note-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .note-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            transform: translateY(50px);
+            transition: var(--transition);
+        }
+
+        .note-modal.active .note-content {
+            transform: translateY(0);
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .note-header h3 {
+            color: var(--dark);
+            font-size: 1.8rem;
+        }
+
+        .close-note {
+            background: var(--light-gray);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-note:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .note-textarea {
+            width: 100%;
+            height: 250px;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid var(--light-gray);
+            font-size: 1.1rem;
+            resize: none;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .note-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
+        }
+
+        .note-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        footer {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 25px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            z-index: 10;
+        }
+
+        /* Focus Mode Overlay */
+        .focus-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--focus-overlay);
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .focus-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .focus-timer {
+            font-size: 7rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: var(--success);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(76, 201, 240, 0.5);
+        }
+
+        .focus-task {
+            font-size: 2rem;
+            max-width: 80%;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .focus-message {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 50px;
+            max-width: 600px;
+        }
+
+        /* Forest Feature */
+        .forest-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto 30px;
+        }
+
+        .tree-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: transform 0.5s ease;
+        }
+
+        .tree {
+            width: 100px;
+            height: 150px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 150"><path d="M50 10 L30 50 L40 50 L25 90 L35 90 L20 130 L50 150 L80 130 L65 90 L75 90 L60 50 L70 50 Z" fill="%232e8b57"/></svg>') no-repeat center;
+            background-size: contain;
+            transition: all 0.5s ease;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 10px;
+        }
+
+        .forest-stats {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .forest-stat {
+            text-align: center;
+        }
+
+        .forest-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest-green);
+        }
+
+        .forest-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Timetable Styles */
+        .timetable-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        .timetable {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .timetable th {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .timetable td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timetable tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .timetable tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .phase-header {
+            background: rgba(67, 97, 238, 0.3) !important;
+            font-weight: 700;
+        }
+
+        .current-week {
+            background: rgba(76, 201, 240, 0.2) !important;
+            border-left: 3px solid var(--success);
+        }
+
+        /* DSA Practice Section */
+        .dsa-container {
+            margin-top: 20px;
+        }
+
+        .dsa-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dsa-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        /* Mobile-specific styles */
+        @media (max-width: 767px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .timer-controls {
+                flex-wrap: wrap;
+            }
+            
+            .timer-display {
+                font-size: 3.8rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 2.3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .install-prompt {
+                width: calc(100% - 50px);
+                left: 25px;
+                right: 25px;
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .task-input {
+                flex-direction: column;
+            }
+            
+            .task-input select {
+                max-width: 100%;
+            }
+            
+            .focus-timer {
+                font-size: 4rem;
+            }
+            
+            .focus-task {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-graduation-cap"></i> StudyFocus Pro</h1>
+            <p class="subtitle">Maximize your productivity with distraction-free focus sessions</p>
+        </header>
+
+        <main class="card">
+            <div class="date-navigation">
+                <div class="date-controls">
+                    <button id="prev-date"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                <div class="date-display" id="current-date">August 1, 2025</div>
+                <div class="date-controls">
+                    <button id="next-date"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            
+            <h2 class="card-title"><i class="fas fa-tasks"></i> Today's Study Plan</h2>
+            <div class="task-input">
+                <input type="text" id="new-task" placeholder="What do you need to study today?">
+                <select id="task-priority">
+                    <option value="low">Low Priority</option>
+                    <option value="medium" selected>Medium Priority</option>
+                    <option value="high">High Priority</option>
+                </select>
+                <button id="add-task"><i class="fas fa-plus"></i> Add Task</button>
+            </div>
+            <ul class="task-list" id="task-list">
+                <!-- Tasks will be added here dynamically -->
+            </ul>
+        </main>
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-clock"></i> Focus Timer</h2>
+            <div class="timer-display" id="timer">25:00</div>
+            <div class="timer-controls">
+                <button id="start-timer" class="btn-success"><i class="fas fa-play"></i> Start Focus</button>
+                <button id="pause-timer"><i class="fas fa-pause"></i> Pause</button>
+                <button id="reset-timer" class="btn-danger"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+            <div class="timer-modes">
+                <div class="timer-mode active" data-minutes="25">Pomodoro</div>
+                <div class="timer-mode" data-minutes="5">Short Break</div>
+                <div class="timer-mode" data-minutes="15">Long Break</div>
+            </div>
+            <div style="margin-top: 25px; text-align: center;">
+                <button id="focus-mode-toggle" class="btn-focus">
+                    <i class="fas fa-lock"></i> Enable Distraction Blocker
+                </button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-tree"></i> Forest Focus</h2>
+            <div class="forest-container">
+                <div class="tree-container">
+                    <div class="tree" id="focus-tree"></div>
+                    <div class="ground"></div>
+                </div>
+            </div>
+            <div class="forest-stats">
+                <div class="forest-stat">
+                    <div class="forest-stat-value" id="trees-grown">12</div>
+                    <div class="forest-stat-label">Trees Grown</div>
+                </div>
+                <div class="forest-stat">
+                    <div class="forest-stat-value" id="focus-hours">36</div>
+                    <div class="forest-stat-label">Focus Hours</div>
+                </div>
+                <div class="forest-stat">
+                    <div class="forest-stat-value" id="current-streak">7</div>
+                    <div class="forest-stat-label">Day Streak</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-laptop-code"></i> DSA Practice</h2>
+            <div class="dsa-container">
+                <div class="dsa-input">
+                    <input type="text" id="dsa-problem" placeholder="Enter problem name or topic">
+                    <button id="add-dsa" class="btn-forest"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <ul class="task-list" id="dsa-list">
+                    <!-- DSA problems will be added here dynamically -->
+                </ul>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Study Timetable</h2>
+            <div class="timetable-container">
+                <table class="timetable">
+                    <thead>
+                        <tr>
+                            <th>Date Range</th>
+                            <th>Web Development</th>
+                            <th>DSA with C++</th>
+                            <th>Cloud Computing</th>
+                            <th>AI/ML</th>
+                            <th>Weekly Goal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetable-body">
+                        <!-- Timetable will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2 class="card-title"><i class="fas fa-check-circle"></i> Completed Today</h2>
+            <ul class="task-list" id="completed-list">
+                <!-- Completed tasks will be added here dynamically -->
+            </ul>
+            <button id="clear-completed" class="btn-danger" style="margin-top: 20px; width: 100%;">
+                <i class="fas fa-trash"></i> Clear Completed
+            </button>
+        </section>
+
+        <div class="notification-area" id="notification-area">
+            <!-- Notifications will appear here -->
+        </div>
+
+        <div class="install-prompt" id="install-prompt">
+            <i class="fas fa-mobile-alt"></i>
+            <div>
+                <h3>Install StudyFocus Pro</h3>
+                <p>Get distraction-blocking features and offline access</p>
+                <button id="install-btn" style="width: 100%; margin-top: 15px;">
+                    <i class="fas fa-download"></i> Install App
+                </button>
+            </div>
+        </div>
+
+        <div class="note-modal" id="note-modal">
+            <div class="note-content">
+                <div class="note-header">
+                    <h3>Task Reflection</h3>
+                    <button class="close-note">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <textarea class="note-textarea" id="note-textarea" placeholder="Write your reflections about this task... What did you learn? What challenges did you face? How can you improve next time?"></textarea>
+                <div class="note-actions">
+                    <button class="btn-warning" id="cancel-note">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button class="btn-success" id="save-note">
+                        <i class="fas fa-save"></i> Save Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Focus Mode Overlay -->
+        <div class="focus-overlay" id="focus-overlay">
+            <div class="focus-timer" id="focus-timer">25:00</div>
+            <div class="focus-task" id="focus-task">Current Task: Mathematics Revision</div>
+            <div class="focus-message">
+                <i class="fas fa-lock"></i> Focus mode enabled - Distractions blocked
+            </div>
+            <button id="exit-focus" class="btn-danger" style="padding: 15px 40px; font-size: 1.2rem;">
+                <i class="fas fa-times"></i> Exit Focus Mode
+            </button>
+        </div>
+
+        <footer>
+            <p>StudyFocus Pro &copy; 2023 | Stay focused and achieve your academic goals</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const newTaskInput = document.getElementById('new-task');
+        const taskPriority = document.getElementById('task-priority');
+        const addTaskBtn = document.getElementById('add-task');
+        const taskList = document.getElementById('task-list');
+        const completedList = document.getElementById('completed-list');
+        const clearCompletedBtn = document.getElementById('clear-completed');
+        const timerDisplay = document.getElementById('timer');
+        const startTimerBtn = document.getElementById('start-timer');
+        const pauseTimerBtn = document.getElementById('pause-timer');
+        const resetTimerBtn = document.getElementById('reset-timer');
+        const timerModes = document.querySelectorAll('.timer-mode');
+        const notificationArea = document.getElementById('notification-area');
+        const installPrompt = document.getElementById('install-prompt');
+        const installBtn = document.getElementById('install-btn');
+        const noteModal = document.getElementById('note-modal');
+        const noteTextarea = document.getElementById('note-textarea');
+        const cancelNoteBtn = document.getElementById('cancel-note');
+        const saveNoteBtn = document.getElementById('save-note');
+        const closeNoteBtn = document.querySelector('.close-note');
+        const focusOverlay = document.getElementById('focus-overlay');
+        const focusTimer = document.getElementById('focus-timer');
+        const focusTaskDisplay = document.getElementById('focus-task');
+        const exitFocusBtn = document.getElementById('exit-focus');
+        const focusModeToggle = document.getElementById('focus-mode-toggle');
+        const prevDateBtn = document.getElementById('prev-date');
+        const nextDateBtn = document.getElementById('next-date');
+        const currentDateDisplay = document.getElementById('current-date');
+        const timetableBody = document.getElementById('timetable-body');
+        const dsaProblemInput = document.getElementById('dsa-problem');
+        const addDsaBtn = document.getElementById('add-dsa');
+        const dsaList = document.getElementById('dsa-list');
+        const focusTree = document.getElementById('focus-tree');
+        const treesGrown = document.getElementById('trees-grown');
+        const focusHours = document.getElementById('focus-hours');
+        const currentStreak = document.getElementById('current-streak');
+
+        // App State
+        let tasks = {};
+        let dsaProblems = {}; // Changed to object for date-based storage
+        let currentDate = new Date(2025, 7, 1); // Starting in August 2025
+        let timerInterval;
+        let timerMinutes = 25;
+        let timerSeconds = 0;
+        let isRunning = false;
+        let focusModeActive = false;
+        let currentTaskForNote = null;
+        let deferredPrompt;
+        let currentFocusTask = null;
+        let forestStats = JSON.parse(localStorage.getItem('forestStats')) || {
+            treesGrown: 12,
+            focusHours: 36,
+            currentStreak: 7,
+            lastFocusDate: new Date().toISOString()
+        };
+
+        // Timetable data based on the provided PDF
+        const timetableData = [
+            // Phase 1: Foundation (Jul 29 - Oct 20, 2025)
+            {
+                phase: "Foundation (Jul 29 - Oct 20, 2025)",
+                focus: "Web Basics + DSA with C++",
+                weeks: [
+                    { date: "Jul 29 - Aug 3", web: "HTML/CSS", dsa: "Start Aug 4", cloud: "", ai: "", goal: "Build 3 static sites" },
+                    { date: "Aug 4 - Aug 17", web: "JavaScript Fundamentals", dsa: "C++ Basics, Arrays", cloud: "", ai: "", goal: "JS interactivity projects" },
+                    { date: "Aug 18 - 31", web: "DOM Manipulation, Git", dsa: "Linked Lists, Stacks", cloud: "", ai: "", goal: "Git portfolio" },
+                    { date: "Sep 1 - 14", web: "Async JS, APIs", dsa: "Queues, Trees", cloud: "", ai: "", goal: "Weather API project" },
+                    { date: "Sep 15 - 28", web: "React Fundamentals", dsa: "Graphs, Hashing", cloud: "", ai: "", goal: "React Todo App" },
+                    { date: "Sep 29 - Oct 20", web: "React Hooks, Tailwind CSS", dsa: "Dynamic Programming", cloud: "", ai: "", goal: "E-commerce project" }
+                ]
+            },
+            
+            // Phase 2: Core Web + Cloud (Oct 21, 2025 - Jan 12, 2026)
+            {
+                phase: "Core Web + Cloud (Oct 21, 2025 - Jan 12, 2026)",
+                focus: "Advanced Web + Cloud Fundamentals",
+                weeks: [
+                    { date: "Oct 21 - Nov 10", web: "React Router, Redux", dsa: "", cloud: "AWS EC2/S3, IAM", ai: "", goal: "Host React App" },
+                    { date: "Nov 11 - Dec 1", web: "Framer Motion, Testing", dsa: "", cloud: "Docker, Kubernetes", ai: "", goal: "Animated portfolio" },
+                    { date: "Dec 2 - 22", web: "Next.js, API Integration", dsa: "", cloud: "AWS Lambda, Serverless", ai: "", goal: "Full-stack blog" },
+                    { date: "Dec 23 - Jan 12", web: "Capstone Project 1", dsa: "", cloud: "Terraform (IaC)", ai: "", goal: "Deploy project" }
+                ]
+            },
+            
+            // Phase 3: AI/ML + Cloud (Jan 13 - Apr 6, 2026)
+            {
+                phase: "AI/ML + Cloud (Jan 13 - Apr 6, 2026)",
+                focus: "AI/ML Core + Cloud Integration",
+                weeks: [
+                    { date: "Jan 13 - Feb 2", web: "", dsa: "", cloud: "GCP/Azure Basics", ai: "Python, NumPy, Pandas", goal: "Data cleaning" },
+                    { date: "Feb 3 - 23", web: "", dsa: "", cloud: "Cloud SQL, BigQuery", ai: "Matplotlib, Seaborn, EDA", goal: "EDA report" },
+                    { date: "Feb 24 - Mar 16", web: "", dsa: "", cloud: "Kubernetes Orchestration", ai: "Scikit-learn, XGBoost", goal: "Predictive models" },
+                    { date: "Mar 17 - Apr 6", web: "", dsa: "", cloud: "Monitoring (CloudWatch)", ai: "TensorFlow, CNN", goal: "Image classification" }
+                ]
+            },
+            
+            // Phase 4: Advanced AI + Deployment (Apr 7 - Jul 26, 2026)
+            {
+                phase: "Advanced AI + Deployment (Apr 7 - Jul 26, 2026)",
+                focus: "Deep Learning + Production Deployment",
+                weeks: [
+                    { date: "Apr 7 - 27", web: "", dsa: "", cloud: "Cloud Security (IAM, SSL)", ai: "PyTorch, NLP", goal: "Sentiment analysis" },
+                    { date: "Apr 28 - May 18", web: "", dsa: "", cloud: "CI/CD (GitHub Actions, Jenkins)", ai: "Hugging Face, Transformers", goal: "Fine-tune BERT" },
+                    { date: "May 19 - Jun 8", web: "", dsa: "", cloud: "Multi-Cloud Deployment", ai: "Capstone Project 2", goal: "Deploy DL model" },
+                    { date: "Jun 9 - Jul 26", web: "", dsa: "", cloud: "Revision & Certifications", ai: "Capstone Project 3", goal: "Full-stack AI app" }
+                ]
+            }
+        ];
+
+        // Initialize the app
+        function initApp() {
+            loadTasks();
+            loadDsaProblems(); // Load DSA problems
+            updateDateDisplay();
+            renderTimetable();
+            renderTasks();
+            updateCompletedList();
+            renderDsaProblems();
+            updateForestStats();
+            
+            // Set up service worker for PWA
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js')
+                        .catch(error => {
+                            console.log('Service Worker registration failed:', error);
+                        });
+                });
+            }
+            
+            // Handle PWA installation
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installPrompt.style.display = 'flex';
+            });
+        }
+
+        // Date Functions
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDisplayDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString(undefined, options);
+        }
+
+        function updateDateDisplay() {
+            currentDateDisplay.textContent = formatDisplayDate(currentDate);
+        }
+
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days);
+            updateDateDisplay();
+            renderTasks();
+            updateCompletedList();
+            renderDsaProblems(); // Update DSA list when date changes
+        }
+
+        // Task Management
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('studyFocusTasks');
+            tasks = savedTasks ? JSON.parse(savedTasks) : {};
+        }
+
+        function saveTasks() {
+            localStorage.setItem('studyFocusTasks', JSON.stringify(tasks));
+        }
+
+        function getTasksForDate(date) {
+            const dateKey = formatDate(date);
+            return tasks[dateKey] || [];
+        }
+
+        function getCompletedTasksForDate(date) {
+            const tasks = getTasksForDate(date);
+            return tasks.filter(task => task.completed);
+        }
+
+        function addTask() {
+            const taskText = newTaskInput.value.trim();
+            if (taskText) {
+                const dateKey = formatDate(currentDate);
+                
+                if (!tasks[dateKey]) {
+                    tasks[dateKey] = [];
+                }
+                
+                const task = {
+                    id: Date.now(),
+                    text: taskText,
+                    priority: taskPriority.value,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+                
+                tasks[dateKey].push(task);
+                saveTasks();
+                renderTasks();
+                newTaskInput.value = '';
+                newTaskInput.focus();
+                showNotification('Task added successfully!', 'success');
+            }
+        }
+
+        function toggleTaskCompletion(id) {
+            const dateKey = formatDate(currentDate);
+            const task = tasks[dateKey].find(task => task.id === id);
+            
+            if (task) {
+                task.completed = !task.completed;
+                if (task.completed) {
+                    task.completedAt = new Date().toISOString();
+                    showNotification('Task completed! Great job!', 'success');
+                    
+                    // Open note modal for reflection
+                    currentTaskForNote = task;
+                    noteModal.classList.add('active');
+                }
+                saveTasks();
+                renderTasks();
+                updateCompletedList();
+            }
+        }
+
+        function deleteTask(id, isCompleted = false) {
+            const dateKey = formatDate(currentDate);
+            if (!tasks[dateKey]) return;
+            
+            if (isCompleted) {
+                tasks[dateKey] = tasks[dateKey].filter(task => task.id !== id || !task.completed);
+            } else {
+                tasks[dateKey] = tasks[dateKey].filter(task => task.id !== id);
+            }
+            
+            saveTasks();
+            if (isCompleted) {
+                updateCompletedList();
+            } else {
+                renderTasks();
+            }
+        }
+
+        function clearCompletedTasks() {
+            const dateKey = formatDate(currentDate);
+            if (tasks[dateKey]) {
+                if (confirm('Are you sure you want to clear all completed tasks for today?')) {
+                    tasks[dateKey] = tasks[dateKey].filter(task => !task.completed);
+                    saveTasks();
+                    updateCompletedList();
+                    showNotification('Completed tasks cleared', 'info');
+                }
+            }
+        }
+
+        function renderTasks() {
+            taskList.innerHTML = '';
+            const tasksForDate = getTasksForDate(currentDate);
+            
+            if (tasksForDate.length === 0) {
+                taskList.innerHTML = '<div class="no-tasks" style="text-align: center; padding: 30px; opacity: 0.7;">No tasks for today. Add some tasks to get started!</div>';
+                return;
+            }
+            
+            tasksForDate.forEach(task => {
+                if (!task.completed) {
+                    const priorityClass = `priority-${task.priority}`;
+                    const priorityText = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+                    
+                    const taskItem = document.createElement('li');
+                    taskItem.className = 'task-item' + (task.completed ? ' completed' : '');
+                    taskItem.innerHTML = `
+                        <div class="task-check ${task.completed ? 'checked' : ''}" data-id="${task.id}"></div>
+                        <div class="${priorityClass} priority-tag">${priorityText}</div>
+                        <div class="task-text">${task.text}</div>
+                        <div class="task-actions">
+                            <button class="delete-task" data-id="${task.id}"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    taskList.appendChild(taskItem);
+                }
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('.task-check').forEach(check => {
+                check.addEventListener('click', () => {
+                    const id = parseInt(check.dataset.id);
+                    toggleTaskCompletion(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-task').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    deleteTask(id);
+                });
+            });
+        }
+
+        function updateCompletedList() {
+            completedList.innerHTML = '';
+            const completedTasks = getCompletedTasksForDate(currentDate);
+            
+            if (completedTasks.length === 0) {
+                completedList.innerHTML = '<div class="no-tasks" style="text-align: center; padding: 30px; opacity: 0.7;">No tasks completed yet. Keep working!</div>';
+                return;
+            }
+            
+            completedTasks.forEach(task => {
+                const priorityClass = `priority-${task.priority}`;
+                const priorityText = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+                
+                const taskItem = document.createElement('li');
+                taskItem.className = 'task-item completed';
+                taskItem.innerHTML = `
+                    <div class="task-check checked"></div>
+                    <div class="${priorityClass} priority-tag">${priorityText}</div>
+                    <div class="task-text">${task.text}</div>
+                    <div class="task-actions">
+                        <button class="add-note" data-id="${task.id}" title="Add reflection">
+                            <i class="fas fa-sticky-note"></i>
+                        </button>
+                        <button class="delete-completed" data-id="${task.id}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                completedList.appendChild(taskItem);
+            });
+            
+            // Add event listeners for delete buttons in completed list
+            document.querySelectorAll('.delete-completed').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    deleteTask(id, true);
+                });
+            });
+            
+            // Add event listeners for note buttons
+            document.querySelectorAll('.add-note').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.id);
+                    const tasksForDate = getTasksForDate(currentDate);
+                    currentTaskForNote = tasksForDate.find(task => task.id === id);
+                    noteTextarea.value = currentTaskForNote.notes || '';
+                    noteModal.classList.add('active');
+                });
+            });
+        }
+
+        // DSA Practice Functions
+        function loadDsaProblems() {
+            const savedDsa = localStorage.getItem('studyFocusDsa');
+            dsaProblems = savedDsa ? JSON.parse(savedDsa) : {};
+        }
+
+        function saveDsaProblems() {
+            localStorage.setItem('studyFocusDsa', JSON.stringify(dsaProblems));
+        }
+
+        function getDsaForDate(date) {
+            const dateKey = formatDate(date);
+            return dsaProblems[dateKey] || [];
+        }
+
+        function addDsaProblem() {
+            const problemText = dsaProblemInput.value.trim();
+            if (problemText) {
+                const dateKey = formatDate(currentDate);
+                
+                if (!dsaProblems[dateKey]) {
+                    dsaProblems[dateKey] = [];
+                }
+                
+                const problem = {
+                    id: Date.now(),
+                    text: problemText,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+                
+                dsaProblems[dateKey].push(problem);
+                saveDsaProblems();
+                renderDsaProblems();
+                dsaProblemInput.value = '';
+                dsaProblemInput.focus();
+                showNotification('DSA problem added!', 'success');
+            }
+        }
+
+        function toggleDsaCompletion(id) {
+            const dateKey = formatDate(currentDate);
+            const problem = dsaProblems[dateKey].find(p => p.id === id);
+            if (problem) {
+                problem.completed = !problem.completed;
+                saveDsaProblems();
+                renderDsaProblems();
+                
+                if (problem.completed) {
+                    showNotification('DSA problem solved! Great work!', 'success');
+                }
+            }
+        }
+
+        function deleteDsaProblem(id) {
+            const dateKey = formatDate(currentDate);
+            dsaProblems[dateKey] = dsaProblems[dateKey].filter(problem => problem.id !== id);
+            saveDsaProblems();
+            renderDsaProblems();
+        }
+
+        function renderDsaProblems() {
+            dsaList.innerHTML = '';
+            const dsaForDate = getDsaForDate(currentDate);
+            
+            if (dsaForDate.length === 0) {
+                dsaList.innerHTML = '<div class="no-tasks" style="text-align: center; padding: 30px; opacity: 0.7;">Add DSA problems to practice</div>';
+                return;
+            }
+            
+            dsaForDate.forEach(problem => {
+                const problemItem = document.createElement('li');
+                problemItem.className = 'task-item' + (problem.completed ? ' completed' : '');
+                problemItem.innerHTML = `
+                    <div class="task-check ${problem.completed ? 'checked' : ''}" data-dsa-id="${problem.id}"></div>
+                    <div class="task-text">${problem.text}</div>
+                    <div class="task-actions">
+                        <button class="delete-dsa" data-dsa-id="${problem.id}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                dsaList.appendChild(problemItem);
+            });
+            
+            // Add event listeners
+            document.querySelectorAll('[data-dsa-id]').forEach(check => {
+                check.addEventListener('click', () => {
+                    const id = parseInt(check.dataset.dsaId);
+                    toggleDsaCompletion(id);
+                });
+            });
+            
+            document.querySelectorAll('.delete-dsa').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = parseInt(btn.dataset.dsaId);
+                    deleteDsaProblem(id);
+                });
+            });
+        }
+
+        // Forest Feature Functions
+        function updateForestStats() {
+            treesGrown.textContent = forestStats.treesGrown;
+            focusHours.textContent = forestStats.focusHours;
+            currentStreak.textContent = forestStats.currentStreak;
+        }
+
+        function saveForestStats() {
+            localStorage.setItem('forestStats', JSON.stringify(forestStats));
+        }
+
+        function growTree() {
+            forestStats.treesGrown++;
+            saveForestStats();
+            updateForestStats();
+            
+            // Animate tree growth
+            focusTree.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                focusTree.style.transform = 'scale(1)';
+            }, 500);
+        }
+
+        // Timetable Functions
+        function renderTimetable() {
+            timetableBody.innerHTML = '';
+            
+            timetableData.forEach(phase => {
+                // Add phase header
+                const phaseRow = document.createElement('tr');
+                phaseRow.className = 'phase-header';
+                phaseRow.innerHTML = `
+                    <td colspan="6"><strong>${phase.phase}</strong>: ${phase.focus}</td>
+                `;
+                timetableBody.appendChild(phaseRow);
+                
+                // Add weeks
+                phase.weeks.forEach(week => {
+                    const weekRow = document.createElement('tr');
+                    
+                    // Highlight current week
+                    const today = new Date();
+                    const currentWeek = week.date.includes('Aug 1') ? 'current-week' : '';
+                    
+                    weekRow.innerHTML = `
+                        <td class="${currentWeek}">${week.date}</td>
+                        <td>${week.web}</td>
+                        <td>${week.dsa}</td>
+                        <td>${week.cloud}</td>
+                        <td>${week.ai}</td>
+                        <td>${week.goal}</td>
+                    `;
+                    timetableBody.appendChild(weekRow);
+                });
+            });
+        }
+
+        // Timer Functions
+        function startTimer() {
+            if (isRunning) return;
+            
+            isRunning = true;
+            startTimerBtn.disabled = true;
+            pauseTimerBtn.disabled = false;
+            
+            // If focus mode is enabled, activate the overlay
+            if (focusModeActive) {
+                activateFocusMode();
+            }
+            
+            timerInterval = setInterval(() => {
+                if (timerSeconds === 0) {
+                    if (timerMinutes === 0) {
+                        timerCompleted();
+                        return;
+                    }
+                    timerMinutes--;
+                    timerSeconds = 59;
+                } else {
+                    timerSeconds--;
+                }
+                updateTimerDisplay();
+                
+                // Update focus timer display
+                if (focusModeActive) {
+                    focusTimer.textContent = `${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+            
+            showNotification('Focus timer started. Work hard!', 'timer');
+        }
+
+        function pauseTimer() {
+            if (!isRunning) return;
+            
+            clearInterval(timerInterval);
+            isRunning = false;
+            startTimerBtn.disabled = false;
+            pauseTimerBtn.disabled = true;
+            
+            // If focus mode is active, show warning
+            if (focusModeActive) {
+                showNotification('Focus mode paused. You can now access other apps.', 'info');
+                deactivateFocusMode();
+            } else {
+                showNotification('Timer paused. Take a breath.', 'info');
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startTimerBtn.disabled = false;
+            pauseTimerBtn.disabled = true;
+            
+            // Reset to selected mode
+            const activeMode = document.querySelector('.timer-mode.active');
+            timerMinutes = parseInt(activeMode.dataset.minutes);
+            timerSeconds = 0;
+            updateTimerDisplay();
+            
+            // Update focus timer display
+            if (focusModeActive) {
+                focusTimer.textContent = `${timerMinutes.toString().padStart(2, '0')}:00`;
+            }
+            
+            showNotification('Timer reset. Ready when you are!', 'info');
+        }
+
+        function updateTimerDisplay() {
+            timerDisplay.textContent = `${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function timerCompleted() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            startTimerBtn.disabled = false;
+            
+            // Grow a tree in the forest
+            growTree();
+            
+            // Update focus hours
+            forestStats.focusHours++;
+            saveForestStats();
+            updateForestStats();
+            
+            // Show notification
+            const isBreak = timerMinutes !== 25;
+            const message = isBreak 
+                ? 'Break time is over! Ready for the next study session?' 
+                : 'Pomodoro completed! Take a well-deserved break.';
+            
+            showNotification(message, isBreak ? 'info' : 'success');
+            
+            // Deactivate focus mode after session
+            if (focusModeActive) {
+                deactivateFocusMode();
+            }
+            
+            // Reset timer
+            resetTimer();
+        }
+
+        function switchTimerMode(minutes) {
+            timerModes.forEach(mode => mode.classList.remove('active'));
+            const selectedMode = [...timerModes].find(mode => parseInt(mode.dataset.minutes) === minutes);
+            selectedMode.classList.add('active');
+            
+            if (!isRunning) {
+                timerMinutes = minutes;
+                timerSeconds = 0;
+                updateTimerDisplay();
+            }
+        }
+
+        // Focus Mode Functions
+        function toggleFocusMode() {
+            focusModeActive = !focusModeActive;
+            
+            if (focusModeActive) {
+                focusModeToggle.innerHTML = '<i class="fas fa-lock-open"></i> Disable Distraction Blocker';
+                focusModeToggle.classList.remove('btn-focus');
+                focusModeToggle.classList.add('btn-warning');
+                showNotification('Distraction blocker enabled. Will activate when timer starts.', 'success');
+            } else {
+                focusModeToggle.innerHTML = '<i class="fas fa-lock"></i> Enable Distraction Blocker';
+                focusModeToggle.classList.remove('btn-warning');
+                focusModeToggle.classList.add('btn-focus');
+                showNotification('Distraction blocker disabled', 'info');
+            }
+        }
+
+        function activateFocusMode() {
+            // Find the first active task
+            const pendingTasks = getTasksForDate(currentDate).filter(t => !t.completed);
+            currentFocusTask = pendingTasks.length > 0 ? pendingTasks[0].text : "No active task";
+            focusTaskDisplay.textContent = `Current Task: ${currentFocusTask}`;
+            focusTimer.textContent = `${timerMinutes.toString().padStart(2, '0')}:${timerSeconds.toString().padStart(2, '0')}`;
+            focusOverlay.classList.add('active');
+            
+            // Prevent user from leaving the app
+            window.addEventListener('beforeunload', preventNav);
+            
+            showNotification('Focus mode activated! All distractions blocked.', 'timer');
+        }
+
+        function deactivateFocusMode() {
+            focusOverlay.classList.remove('active');
+            window.removeEventListener('beforeunload', preventNav);
+            focusModeActive = false;
+            toggleFocusMode(); // Reset the toggle button
+            showNotification('Focus mode deactivated', 'info');
+        }
+
+        function preventNav(event) {
+            event.preventDefault();
+            event.returnValue = '';
+            return '';
+        }
+
+        // Note Management
+        function saveNote() {
+            if (currentTaskForNote) {
+                currentTaskForNote.notes = noteTextarea.value;
+                saveTasks();
+                noteModal.classList.remove('active');
+                showNotification('Notes saved successfully!', 'success');
+            }
+        }
+
+        // Notification System
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            let iconClass;
+            switch (type) {
+                case 'success':
+                    iconClass = 'fas fa-check-circle';
+                    break;
+                case 'danger':
+                case 'reminder':
+                    iconClass = 'fas fa-exclamation-circle';
+                    break;
+                case 'timer':
+                    iconClass = 'fas fa-clock';
+                    break;
+                default:
+                    iconClass = 'fas fa-info-circle';
+            }
+            
+            notification.innerHTML = `
+                <i class="${iconClass}"></i>
+                <div>${message}</div>
+            `;
+            
+            notificationArea.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 5000);
+        }
+
+        // PWA Installation
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(choiceResult => {
+                    if (choiceResult.outcome === 'accepted') {
+                        installPrompt.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        // Event Listeners
+        addTaskBtn.addEventListener('click', addTask);
+        newTaskInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+        
+        startTimerBtn.addEventListener('click', startTimer);
+        pauseTimerBtn.addEventListener('click', pauseTimer);
+        resetTimerBtn.addEventListener('click', resetTimer);
+        
+        timerModes.forEach(mode => {
+            mode.addEventListener('click', () => {
+                const minutes = parseInt(mode.dataset.minutes);
+                switchTimerMode(minutes);
+            });
+        });
+        
+        clearCompletedBtn.addEventListener('click', clearCompletedTasks);
+        installBtn.addEventListener('click', installApp);
+        
+        // Note modal events
+        saveNoteBtn.addEventListener('click', saveNote);
+        cancelNoteBtn.addEventListener('click', () => {
+            noteModal.classList.remove('active');
+        });
+        closeNoteBtn.addEventListener('click', () => {
+            noteModal.classList.remove('active');
+        });
+        
+        // Close modal when clicking outside
+        noteModal.addEventListener('click', (e) => {
+            if (e.target === noteModal) {
+                noteModal.classList.remove('active');
+            }
+        });
+        
+        // Focus mode events
+        focusModeToggle.addEventListener('click', toggleFocusMode);
+        exitFocusBtn.addEventListener('click', () => {
+            deactivateFocusMode();
+            pauseTimer();
+        });
+        
+        // Date navigation
+        prevDateBtn.addEventListener('click', () => changeDate(-1));
+        nextDateBtn.addEventListener('click', () => changeDate(1));
+        
+        // DSA events
+        addDsaBtn.addEventListener('click', addDsaProblem);
+        dsaProblemInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addDsaProblem();
+        });
+
+        // Initialize the app
+        initApp();
+    </script>
+</body>
+</html>
